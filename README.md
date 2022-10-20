@@ -3,7 +3,7 @@
 
 <h2> I'm sudheerthan <img align='right' src="https://visitor-badge.laobi.icu/badge?page_id=hareendranmg.hareendranmg&style=flat-square" alt="visitor badge"/> </h2>
 
-<img src="https://raw.githubusercontent.com/MicaelliMedeiros/micaellimedeiros/master/image/computer-illustration.png" width="230" align='right'>
+<img src="https://user-images.githubusercontent.com/37679603/197015250-26e47180-f794-4b97-9b3d-e51eb820f8b0.jpg" width="230" align='right'>
 
 <h3> 🧑‍💻 About Me </h3>
 

@@ -1,114 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sudheerthan's Portfolio</title>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f8f8f8;
-    }
-    header {
-      background-color: #333;
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-    }
-    section {
-      margin: 20px;
-    }
-    h2 {
-      color: #333;
-    }
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    li {
-      margin-bottom: 10px;
-    }
-    .project {
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin-bottom: 20px;
-    }
-    footer {
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      padding: 10px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-    .contact-info {
-      margin-top: 20px; /* Increase margin for better separation */
-    }
-    .contact-info p {
-      margin: 0; /* Remove default margin for paragraphs */
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SudGPT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+        }
+
+        body {
+            background-color: #343541;
+            color: #FFFFFF;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-container {
+            flex: 1;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            overflow-y: auto;
+        }
+
+        .message {
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .user-message {
+            background-color: #444654;
+        }
+
+        .bot-message {
+            background-color: #343541;
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 3px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .user-avatar {
+            background-color: #8792F5;
+        }
+
+        .bot-avatar {
+            background-color: #19C37D;
+        }
+
+        .message-content {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .input-container {
+            padding: 20px;
+            background-color: #343541;
+            border-top: 1px solid #444654;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .input-box {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            background-color: #40414F;
+            border: 1px solid #565869;
+            border-radius: 5px;
+            color: white;
+            resize: none;
+            min-height: 50px;
+            font-size: 16px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #8792F5;
+        }
+
+        button {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #8792F5;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            color: #565869;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Sudheerthan's Portfolio</h1>
-  </header>
+    <div class="chat-container">
+        <div class="message bot-message">
+            <div class="avatar bot-avatar">S</div>
+            <div class="message-content">
+                Hello! I'm SudGPT, a simple chatbot. I can help you with basic questions. What would you like to know?
+            </div>
+        </div>
+    </div>
+    <div class="input-container">
+        <div class="input-box">
+            <textarea placeholder="Type your message here..." rows="1"></textarea>
+            <button disabled>→</button>
+        </div>
+    </div>
 
-  <section>
-    <h2>About Me</h2>
-    <p>
-      Hi, I'm Sudheer, a passionate embedded firmware developer with expertise in microcontroller programming, real-time operating systems (RTOS), and embedded systems.
-    </p>
-  </section>
+    <script>
+        const textarea = document.querySelector('textarea');
+        const sendButton = document.querySelector('button');
+        const chatContainer = document.querySelector('.chat-container');
 
-  <section>
-    <h2>Skills</h2>
-    <ul>
-      <li>Microcontroller Programming</li>
-      <li>RTOS (FreeRTOS)</li>
-      <li>Embedded C</li>
-      <li>IOT Development</li>
-      <li>Firmware Development</li>
-      <!-- Add more skills as needed -->
-    </ul>
-  </section>
+        const responses = {
+            "hello": "Hello! How can I help you today?",
+            "hi": "Hi there! What can I do for you?",
+            "how are you": "I'm functioning well, thank you! How can I assist you?",
+            "what is your name": "I'm SudGPT, a simple chatbot designed to help with basic questions.",
+            "bye": "Goodbye! Have a great day!",
+            "default": "I understand your message, but I'm a simple demo bot with limited responses. Try asking me basic questions!"
+        };
 
-  <section>
-    <h2>Projects</h2>
+        function addMessage(content, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = `avatar ${isUser ? 'user-avatar' : 'bot-avatar'}`;
+            avatar.textContent = isUser ? 'U' : 'S';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = content;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+            chatContainer.appendChild(messageDiv);
+            
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
 
-<!--    <div class="project">
-      <h3>Project 1: Placeholder Project</h3>
-      <p>Description of the placeholder project. Technologies used and link to GitHub repository if available.</p>
-    </div> -->
+        function getResponse(message) {
+            const lowercaseMessage = message.toLowerCase().trim();
+            return responses[lowercaseMessage] || responses.default;
+        }
 
-    <div class="project">
-  <h3>Guardian Eye Doorbell</h3>
-  <p>A smart doorbell with advanced security features.</p>
-  <p>Technologies used: Microcontroller, Security Protocol, etc.</p>
-  <p><a href="https://github.com/your-username/guardian-eye-doorbell" target="_blank">GitHub Repository</a></p>
-</div>
+        textarea.addEventListener('input', () => {
+            sendButton.disabled = !textarea.value.trim();
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        });
 
+        function handleSend() {
+            const message = textarea.value.trim();
+            if (!message) return;
 
- <!--   <div class="project">
-      <h3>Project 3: Placeholder Project</h3>
-      <p>Description of the placeholder project. Technologies used and link to GitHub repository if available.</p>
-    </div> -->
+            addMessage(message, true);
+            textarea.value = '';
+            textarea.style.height = 'auto';
+            sendButton.disabled = true;
 
-    <!-- Add more projects as needed -->
-  </section>
+            setTimeout(() => {
+                const response = getResponse(message);
+                addMessage(response, false);
+            }, 500);
+        }
 
-  <section class="contact-info">
-    <h2>Contact</h2>
-    <p>Feel free to reach out to me via email:</p>
-    <p><strong>Email:</strong> sudheerthan@gmail.com</p>
-    <p>.</p>
-  </section>
-
-  <footer>
-    &copy; 2024 Sudheerthan's Portfolio
-  </footer>
+        sendButton.addEventListener('click', handleSend);
+        
+        textarea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+    </script>
 </body>
 </html>
